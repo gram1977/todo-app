@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import authservice from "../../services/authservice";
 // useState Hook: Manages component state (email and password)
 // Returns [currentValue, setterFunction]
 // debugger;
@@ -10,13 +11,19 @@ not that onLogin is an object itself.*/
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault(); // Prevent form submission reload
 
-    if (email && password) {
-      console.log("Logging in with", email, password);
+    const result = authservice.authenticateUser(email, password);
+    if (result.success) {
+      const username = email.split("@")[0]; // Example: get username from email
       onLogin({ email, password });
+      navigate(`/welcome/${username}`);
+    } else {
+      setError(result.message);
     }
   };
 
@@ -31,6 +38,7 @@ Whenever the component's state or props change
         <div className="card-body">
           <h3 className="card-title text-center mb-4">Login</h3>
           <form>
+            {error && <div style={{ color: "red" }}>{error}</div>}
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Email:

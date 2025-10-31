@@ -5,6 +5,7 @@ import Login from "./components/Login/Login";
 import Welcome from "./components/Welcome/Welcome";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
+import { Routes, Route, Navigate } from "react-router-dom";
 // debugger;
 console.log("App.js loaded");
 function App() {
@@ -29,23 +30,38 @@ function App() {
     >
       <Menu user={user} isLoggedIn={isLoggedIn} />
       <main className="flex-grow-1">
-        {isLoggedIn ? (
-          // Render Welcome component when logged in
-          <Welcome user={user} />
-        ) : (
-          // Render Login component when not logged in
-          <Login onLogin={handleLogin} />
-          /*           onLogin={(email, password) => {
-                        console.log("Logging in with", email, password);
-                        // For now, just set logged in to true
-                        handleLogin({ email, password });
-                      }} */
-        )}
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to={`/welcome/${user?.email?.split("@")[0]}`} />
+              ) : (
+                <Login onLogin={handleLogin} />
+              )
+            }
+          />
+          <Route
+            path="/welcome/:username"
+            element={
+              isLoggedIn ? <Welcome user={user} /> : <Navigate to="/login" />
+            }
+          />
+          {/* Default route */}
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <Navigate to={`/welcome/${user?.email?.split("@")[0]}`} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
       </main>
       <Footer />
     </div>
-
-    // Conditional Rendering: Show different components based on Login status
   );
 }
 
