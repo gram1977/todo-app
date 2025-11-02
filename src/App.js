@@ -6,6 +6,7 @@ import Welcome from "./components/Welcome/Welcome";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
 import { Routes, Route, Navigate } from "react-router-dom";
+import Todos from "./Todos";
 // debugger;
 console.log("App.js loaded");
 function App() {
@@ -57,6 +58,11 @@ function App() {
                 <Navigate to="/login" />
               )
             }
+          />
+
+          <Route
+            path="/todos/:username"
+            element={isLoggedIn ? <Todos /> : <Navigate to="/login" />}
           />
         </Routes>
       </main>
